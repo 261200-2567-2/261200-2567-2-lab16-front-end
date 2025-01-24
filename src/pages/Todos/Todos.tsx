@@ -7,9 +7,9 @@ const Todos = () => {
   const {
     state,
     setState,
+    todos,
     addTodoTitle,
     setAddTodoTitle,
-    filteredTodos,
     handleCreateTodo,
     handleMarkAsComplete,
     handleMarkAsIncomplete,
@@ -86,10 +86,10 @@ const Todos = () => {
               Incomplete
             </button>
           </div>
-          {filteredTodos.length !== 0 ? (
+          {todos.length !== 0 ? (
             <table>
               <tbody>
-                {filteredTodos.map((todo, index) => (
+                {todos.map((todo, index) => (
                   <tr
                     key={todo.id}
                     className={`text-center h-16 ${index % 2 === 0 ? 'bg-gray-200' : ''}`}

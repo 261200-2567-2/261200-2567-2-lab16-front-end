@@ -8,7 +8,6 @@ const useTodosController = () => {
   const { todos, setTodos } = useContext(TodoContext);
   const [addTodoTitle, setAddTodoTitle] = useState('');
   const [state, setState] = useState<'all' | 'completed' | 'incomplete'>('all');
-  const [filteredTodos, setFilteredTodos] = useState(todos);
 
   useEffect(() => {
     httpClient.get<Todo[]>('/todos').then((response) => {
@@ -17,53 +16,67 @@ const useTodosController = () => {
   }, [httpClient, setTodos]);
 
   useEffect(() => {
-    setFilteredTodos(
-      todos.filter((todo) => {
-        if (state === 'all') return true;
-        if (state === 'completed') return todo.completed;
-        if (state === 'incomplete') return !todo.completed;
-        return false;
-      }),
-    );
-  }, [state, todos]);
+    if (state === 'completed') {
+      httpClient.get<Todo[]>('/todos?status=completed').then((response) => {
+        setTodos(response);
+      });
+    } else if (state === 'incomplete') {
+      httpClient.get<Todo[]>('/todos?status=incomplete').then((response) => {
+        setTodos(response);
+      });
+    } else {
+      httpClient.get<Todo[]>('/todos').then((response) => {
+        setTodos(response);
+      });
+    }
+  }, [httpClient, setTodos, state]);
 
   const handleCreateTodo = (title: string) => {
-    const newTodo: Todo = {
-      id: todos.length + 1,
-      title,
-      completed: false,
-    };
-    setTodos([...todos, newTodo]);
+    httpClient.post<Todo>('/todos', { title }).then((response) => {
+      setTodos([...todos, response]);
+    });
   };
 
   const handleMarkAsComplete = (id: number) => {
-    const updatedTodos = todos.map((todo) => {
-      if (todo.id === id) {
-        return { ...todo, completed: true };
-      }
-      return todo;
+    httpClient.patch(`/todos/${id}`, { completed: true }).then(() => {
+      const updatedTodos = todos.map((todo) => {
+        if (todo.id === id) {
+          return { ...todo, completed: true };
+        }
+        return todo;
+      });
+      setTodos(updatedTodos);
     });
-    setTodos(updatedTodos);
   };
 
   const handleMarkAsIncomplete = (id: number) => {
-    const updatedTodos = todos.map((todo) => {
-      if (todo.id === id) {
-        return { ...todo, completed: false };
-      }
-      return todo;
+    httpClient.patch(`/todos/${id}`, { completed: false }).then(() => {
+      const updatedTodos = todos.map((todo) => {
+        if (todo.id === id) {
+          return { ...todo, completed: false };
+        }
+        return todo;
+      });
+      setTodos(updatedTodos);
     });
-    setTodos(updatedTodos);
+  };
+
+  const handleDeleteTodo = (id: number) => {
+    httpClient.delete(`/todos/${id}`).then(() => {
+      setTodos(todos.filter((todo) => todo.id !== id));
+    });
   };
 
   const handleDownloadTodos = () => {
-    const a = document.createElement('a');
-    const file = new Blob([JSON.stringify(todos)], {
-      type: 'application/json',
+    httpClient.get<Todo[]>('/todos').then((response) => {
+      const a = document.createElement('a');
+      const file = new Blob([JSON.stringify(response)], {
+        type: 'application/json',
+      });
+      a.href = URL.createObjectURL(file);
+      a.download = 'todos.json';
+      a.click();
     });
-    a.href = URL.createObjectURL(file);
-    a.download = 'todos.json';
-    a.click();
   };
 
   const handleUploadTodos = (todos: Todo[]) => {
@@ -73,12 +86,13 @@ const useTodosController = () => {
   return {
     state,
     setState,
+    todos,
     addTodoTitle,
     setAddTodoTitle,
-    filteredTodos,
     handleCreateTodo,
     handleMarkAsComplete,
     handleMarkAsIncomplete,
+    handleDeleteTodo,
     handleDownloadTodos,
     handleUploadTodos,
   };

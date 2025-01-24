@@ -3,8 +3,14 @@ import useSearchController from './useSearchController';
 
 const Search = () => {
   const navigate = useNavigate();
-  const { searchResults, handleMarkAsComplete, handleMarkAsIncomplete } =
-    useSearchController();
+  const {
+    searchResults,
+    search,
+    setSearch,
+    handleSearch,
+    handleMarkAsComplete,
+    handleMarkAsIncomplete,
+  } = useSearchController();
   return (
     <div className="h-screen w-screen flex flex-col">
       <div className="h-full w-full flex flex-col px-4 py-8 gap-4 items-center">
@@ -26,8 +32,13 @@ const Search = () => {
             type="text"
             placeholder="Search"
             className="px-4 py-2 rounded border-2 w-full"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
-          <button className="text-black px-4 py-2 rounded border-2">
+          <button
+            className="text-black px-4 py-2 rounded border-2"
+            onClick={() => handleSearch()}
+          >
             Search
           </button>
         </div>
