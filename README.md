@@ -1,8 +1,8 @@
-#Setup
+# Setup
 ```.env
 VITE_API_URL = 'http://localhost:8080/'
 ```
-#Run
+# Run
 ```
 npm install
 
