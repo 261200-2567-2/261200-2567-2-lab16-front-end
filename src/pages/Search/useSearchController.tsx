@@ -8,13 +8,15 @@ const useSearchController = () => {
   const [searchResults, setSearchResults] = useState<Todo[]>([]);
 
   const handleSearch = () => {
-    httpClient.get<Todo[]>(`/todos?title=${search}`).then((response) => {
-      setSearchResults(response);
-    });
+    httpClient
+      .get<Todo[]>(`/todos/search/?title=${search}`)
+      .then((response) => {
+        setSearchResults(response);
+      });
   };
 
   const handleMarkAsComplete = (id: number) => {
-    httpClient.patch(`/todos/${id}`, { completed: true }).then(() => {
+    httpClient.put(`/todos/${id}`, { completed: true }).then(() => {
       const updatedTodos = searchResults.map((todo) => {
         if (todo.id === id) {
           return { ...todo, completed: true };
@@ -26,7 +28,7 @@ const useSearchController = () => {
   };
 
   const handleMarkAsIncomplete = (id: number) => {
-    httpClient.patch(`/todos/${id}`, { completed: false }).then(() => {
+    httpClient.put(`/todos/${id}`, { completed: false }).then(() => {
       const updatedTodos = searchResults.map((todo) => {
         if (todo.id === id) {
           return { ...todo, completed: false };

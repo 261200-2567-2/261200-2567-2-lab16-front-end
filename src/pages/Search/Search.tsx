@@ -42,7 +42,7 @@ const Search = () => {
             Search
           </button>
         </div>
-        <table>
+        <table className="w-2/3 flex flex-row gap-4 border-b-2 pb-2">
           <tbody>
             {searchResults.map((todo, index) => (
               <tr

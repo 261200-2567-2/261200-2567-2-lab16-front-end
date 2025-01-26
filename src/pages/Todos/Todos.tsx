@@ -12,6 +12,7 @@ const Todos = () => {
     setAddTodoTitle,
     handleCreateTodo,
     handleMarkAsComplete,
+    handleDeleteTodo,
     handleMarkAsIncomplete,
     handleDownloadTodos,
     handleUploadTodos,
@@ -109,6 +110,14 @@ const Todos = () => {
                         {todo.completed
                           ? 'Mark As Incomplete'
                           : 'Mark As Complete'}
+                      </button>
+                    </td>
+                    <td>
+                      <button
+                        className="px-4 py-2 rounded border-2"
+                        onClick={() => handleDeleteTodo(todo.id)}
+                      >
+                        Delete
                       </button>
                     </td>
                   </tr>

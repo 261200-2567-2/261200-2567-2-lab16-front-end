@@ -10,35 +10,36 @@ const useTodosController = () => {
   const [state, setState] = useState<'all' | 'completed' | 'incomplete'>('all');
 
   useEffect(() => {
-    httpClient.get<Todo[]>('/todos').then((response) => {
+    httpClient.get<Todo[]>('/todos/').then((response) => {
       setTodos(response);
     });
   }, [httpClient, setTodos]);
 
   useEffect(() => {
     if (state === 'completed') {
-      httpClient.get<Todo[]>('/todos?status=completed').then((response) => {
+      httpClient.get<Todo[]>('/todos/?status=true').then((response) => {
+        console.log(response);
         setTodos(response);
       });
     } else if (state === 'incomplete') {
-      httpClient.get<Todo[]>('/todos?status=incomplete').then((response) => {
+      httpClient.get<Todo[]>('/todos/?status=false').then((response) => {
         setTodos(response);
       });
     } else {
-      httpClient.get<Todo[]>('/todos').then((response) => {
+      httpClient.get<Todo[]>('/todos/').then((response) => {
         setTodos(response);
       });
     }
   }, [httpClient, setTodos, state]);
 
   const handleCreateTodo = (title: string) => {
-    httpClient.post<Todo>('/todos', { title }).then((response) => {
+    httpClient.post<Todo>('/todos/', { title }).then((response) => {
       setTodos([...todos, response]);
     });
   };
 
   const handleMarkAsComplete = (id: number) => {
-    httpClient.patch(`/todos/${id}`, { completed: true }).then(() => {
+    httpClient.put(`/todos/${id}`, { completed: true }).then(() => {
       const updatedTodos = todos.map((todo) => {
         if (todo.id === id) {
           return { ...todo, completed: true };
@@ -50,7 +51,7 @@ const useTodosController = () => {
   };
 
   const handleMarkAsIncomplete = (id: number) => {
-    httpClient.patch(`/todos/${id}`, { completed: false }).then(() => {
+    httpClient.put(`/todos/${id}`, { completed: false }).then(() => {
       const updatedTodos = todos.map((todo) => {
         if (todo.id === id) {
           return { ...todo, completed: false };
@@ -68,7 +69,7 @@ const useTodosController = () => {
   };
 
   const handleDownloadTodos = () => {
-    httpClient.get<Todo[]>('/todos').then((response) => {
+    httpClient.get<Todo[]>('/todos/').then((response) => {
       const a = document.createElement('a');
       const file = new Blob([JSON.stringify(response)], {
         type: 'application/json',
@@ -80,7 +81,7 @@ const useTodosController = () => {
   };
 
   const handleUploadTodos = (todos: Todo[]) => {
-    httpClient.post<Todo[]>('/todos', todos).then(() => {
+    httpClient.post<Todo[]>('/todos/', todos).then(() => {
       setTodos(todos);
     });
   };
