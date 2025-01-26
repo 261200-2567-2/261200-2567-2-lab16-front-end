@@ -39,11 +39,18 @@ const useSearchController = () => {
     });
   };
 
+  const handleDeleteTodo = (id: number) => {
+    httpClient.delete(`/todos/${id}`).then(() => {
+      setSearchResults(searchResults.filter((todo) => todo.id !== id));
+    });
+  };
+
   return {
     search,
     setSearch,
     searchResults,
     handleSearch,
+    handleDeleteTodo,
     handleMarkAsComplete,
     handleMarkAsIncomplete,
   };

@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import useTodosController from './useTodosController';
 import { useNavigate } from 'react-router';
+import TodoItem from '../../components/TodoItem';
 
 const Todos = () => {
   const navigate = useNavigate();
@@ -91,36 +92,16 @@ const Todos = () => {
             <table>
               <tbody>
                 {todos.map((todo, index) => (
-                  <tr
+                  <TodoItem
                     key={todo.id}
-                    className={`text-center h-16 ${index % 2 === 0 ? 'bg-gray-200' : ''}`}
-                  >
-                    <td className={todo.completed ? 'line-through' : ''}>
-                      {todo.title}
-                    </td>
-                    <td>
-                      <button
-                        className="px-4 py-2 rounded border-2"
-                        onClick={() =>
-                          todo.completed
-                            ? handleMarkAsIncomplete(todo.id)
-                            : handleMarkAsComplete(todo.id)
-                        }
-                      >
-                        {todo.completed
-                          ? 'Mark As Incomplete'
-                          : 'Mark As Complete'}
-                      </button>
-                    </td>
-                    <td>
-                      <button
-                        className="px-4 py-2 rounded border-2"
-                        onClick={() => handleDeleteTodo(todo.id)}
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
+                    id={todo.id}
+                    index={index}
+                    completed={todo.completed}
+                    title={todo.title}
+                    handleMarkAsComplete={handleMarkAsComplete}
+                    handleMarkAsIncomplete={handleMarkAsIncomplete}
+                    handleDeleteTodo={handleDeleteTodo}
+                  />
                 ))}
               </tbody>
             </table>

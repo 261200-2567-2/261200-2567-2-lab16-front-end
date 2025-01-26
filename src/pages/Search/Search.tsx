@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router';
 import useSearchController from './useSearchController';
+import TodoItem from '../../components/TodoItem';
 
 const Search = () => {
   const navigate = useNavigate();
@@ -8,6 +9,7 @@ const Search = () => {
     search,
     setSearch,
     handleSearch,
+    handleDeleteTodo,
     handleMarkAsComplete,
     handleMarkAsIncomplete,
   } = useSearchController();
@@ -27,47 +29,39 @@ const Search = () => {
             Todo App
           </div>
         </div>
-        <div className="w-2/3 flex flex-row gap-4 border-b-2 pb-2">
-          <input
-            type="text"
-            placeholder="Search"
-            className="px-4 py-2 rounded border-2 w-full"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <button
-            className="text-black px-4 py-2 rounded border-2"
-            onClick={() => handleSearch()}
-          >
-            Search
-          </button>
+        <div className="flex flex-col w-2/3 gap-4">
+          <div className="flex flex-row gap-4 border-b-2 pb-2">
+            <input
+              type="text"
+              placeholder="Search"
+              className="px-4 py-2 rounded border-2 w-full"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <button
+              className="text-black px-4 py-2 rounded border-2"
+              onClick={() => handleSearch()}
+            >
+              Search
+            </button>
+          </div>
+          <table>
+            <tbody>
+              {searchResults.map((todo, index) => (
+                <TodoItem
+                  key={todo.id}
+                  id={todo.id}
+                  index={index}
+                  completed={todo.completed}
+                  title={todo.title}
+                  handleMarkAsComplete={handleMarkAsComplete}
+                  handleMarkAsIncomplete={handleMarkAsIncomplete}
+                  handleDeleteTodo={handleDeleteTodo}
+                />
+              ))}
+            </tbody>
+          </table>
         </div>
-        <table className="w-2/3 flex flex-row gap-4 border-b-2 pb-2">
-          <tbody>
-            {searchResults.map((todo, index) => (
-              <tr
-                key={todo.id}
-                className={`text-center h-16 ${index % 2 === 0 ? 'bg-gray-200' : ''}`}
-              >
-                <td className={todo.completed ? 'line-through' : ''}>
-                  {todo.title}
-                </td>
-                <td>
-                  <button
-                    className="px-4 py-2 rounded border-2"
-                    onClick={() =>
-                      todo.completed
-                        ? handleMarkAsIncomplete(todo.id)
-                        : handleMarkAsComplete(todo.id)
-                    }
-                  >
-                    {todo.completed ? 'Mark As Incomplete' : 'Mark As Complete'}
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
       </div>
     </div>
   );

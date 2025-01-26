@@ -18,7 +18,6 @@ const useTodosController = () => {
   useEffect(() => {
     if (state === 'completed') {
       httpClient.get<Todo[]>('/todos/?status=true').then((response) => {
-        console.log(response);
         setTodos(response);
       });
     } else if (state === 'incomplete') {
